@@ -4,6 +4,24 @@ import org.apache.spark.sql.functions._
 
 // import org.apache.log4j.Logger;
 
+case class IpReport(ip: String, count: Long)
+case class UriReport(uri: String, count: Long)
+case class ReportLine(date: java.sql.Date, ip_list: Array[IpReport], uri_list: Array[UriReport])
+/*
+{
+"date" : "today",
+"ip_list": [ 
+    { "ip": "10.10.10.1", "count": "122"},
+    { "ip": "10.10.10.1", "count": "122"}
+], 
+"uri_list": [ 
+    { "uri": "/admin", "count": "122"},
+    { "uri": "/dangerous_uri", "count": "129902"}
+]
+} 
+*/
+
+
 case class Report(spark: SparkSession) {
 
   import spark.implicits._
@@ -50,7 +68,7 @@ case class Report(spark: SparkSession) {
         inner join uris on uris.date = dates.date
         """)
 
-    report.coalesce(1).write.mode("Overwrite").json(jsonReportPath)
+    report.as[ReportLine].coalesce(1).write.mode("Overwrite").json(jsonReportPath)
 
   }
 }

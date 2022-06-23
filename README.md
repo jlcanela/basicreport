@@ -27,6 +27,15 @@ git clone git@github.com:jlcanela/basicreport.git
 cd basicreport
 curl -o access.log.gz -L https://github.com/jlcanela/spark-hands-on/raw/master/almhuette-raith.log/access.log.gz
 ./mill report.standalone.run import access.log.gz data/accesslogs
+./mill report.standalone.run report data/accesslogs data/report
+```
+
+# Run using spark submit 
+
+```
+./mill report.assembly
+spark-submit --class ReportCli out/report/assembly/dest/out.jar import access.log.gz data/accesslogs 
+spark-submit --class ReportCli out/report/assembly/dest/out.jar report data/accesslogs data/report
 ```
 
 # Tools used 
