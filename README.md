@@ -23,6 +23,12 @@ Example of the report:
 
 To run the project:
 ```
+git clone git@github.com:jlcanela/basicreport.git
+cd basicreport
 ./mill report.run
 ```
+
+# Tools used 
+
+mill: https://com-lihaoyi.github.io/mill/mill/Intro_to_Mill.html
 

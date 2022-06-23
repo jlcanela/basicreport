@@ -1,1 +1,5 @@
+.coursier
 .history
+.metals
+out/
+.dccache
