@@ -25,7 +25,8 @@ To run the project:
 ```
 git clone git@github.com:jlcanela/basicreport.git
 cd basicreport
-./mill report.run
+curl -o access.log.gz -L https://github.com/jlcanela/spark-hands-on/raw/master/almhuette-raith.log/access.log.gz
+./mill report.standalone.run import access.log.gz data/accesslogs
 ```
 
 # Tools used 

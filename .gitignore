@@ -1,5 +1,7 @@
+access.log.gz
 .coursier
 .history
 .metals
+data/
 out/
 .dccache
