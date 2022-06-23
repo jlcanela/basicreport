@@ -1,13 +1,15 @@
+import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.Dataset
-import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.functions._
 
-object AccessLogsImporter {
+case class AccessLogsImporter(spark: SparkSession) {
+
+  import spark.implicits._
 
   val REQ_EX = "([^ ]+)[ ]+([^ ]+)[ ]+([^ ]+)".r
 
-  def addRequestColumns(spark: SparkSession, ds: DataFrame) = ds
+  def addRequestColumns(ds: DataFrame) = ds
     .withColumn(
       "method",
       regexp_extract(ds("request"), REQ_EX.toString, 1)
@@ -22,8 +24,7 @@ object AccessLogsImporter {
     )
     .drop("request")
 
-  def importLogs(spark: SparkSession, apacheLogFilePath: String, parquetAccessLogPath: String) = {
-    import spark.implicits._
+  def importLogs(apacheLogFilePath: String, parquetAccessLogPath: String) = {
 
     val logsAsText = spark.read.text(apacheLogFilePath).as[String]
     val logsAsAccessLog = logsAsText.flatMap(AccessLog.fromString _)
@@ -32,7 +33,7 @@ object AccessLogsImporter {
       to_timestamp(logsAsAccessLog("datetime"), "dd/MMM/yyyy:HH:mm:ss X")
     )
 
-    val enrichedAccessLog = addRequestColumns(spark, logsWithDateTime)
+    val enrichedAccessLog = addRequestColumns(logsWithDateTime)
 
     enrichedAccessLog.write
       .option("compression", "gzip")
